@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="svc_channel_progress_name">Sync progress</string>
+    <string name="svc_channel_progress_desc">Shows the progress of an ongoing music sync.</string>
+    <string name="svc_channel_result_name">Sync results</string>
+    <string name="svc_channel_result_desc">Shows when a sync has finished, stopped or needs your attention.</string>
+
+    <string name="svc_notif_preparing">Preparing…</string>
+    <string name="svc_notif_scanning_title">Scanning cards</string>
+    <string name="svc_scan_loading_index">Reading the sync index</string>
+    <string name="svc_scan_listing_target">Listing the Walkman card</string>
+    <string name="svc_scan_cleaning">Cleaning leftover partial files</string>
+    <string name="svc_scan_listing_source">Listing the tablet card</string>
+    <string name="svc_scan_reading_tags">Reading music tags</string>
+    <string name="svc_scan_reading_tags_count">Reading music tags (%1$d of %2$d)</string>
+    <string name="svc_scan_planning">Comparing the cards</string>
+
+    <string name="svc_notif_transferring_title">Copying music to the Walkman</string>
+    <string name="svc_notif_paused_title">Sync paused</string>
+    <string name="svc_notif_transfer_text">%1$d of %2$d files · %3$s/s</string>
+    <string name="svc_notif_transfer_text_no_speed">%1$d of %2$d files</string>
+    <string name="svc_notif_eta">About %1$s left</string>
+    <string name="svc_notif_paused_text">%1$d of %2$d files processed</string>
+
+    <string name="svc_action_pause">Pause</string>
+    <string name="svc_action_resume">Resume</string>
+    <string name="svc_action_cancel">Cancel</string>
+
+    <string name="svc_result_done_title">Sync complete</string>
+    <string name="svc_result_done_text">%1$d files copied (%2$s)</string>
+    <string name="svc_result_errors_title">Sync finished with errors</string>
+    <string name="svc_result_errors_text">%1$d files copied, %2$d failed</string>
+    <string name="svc_result_cancelled_title">Sync cancelled</string>
+    <string name="svc_result_cancelled_text">%1$d files were copied before cancelling</string>
+    <string name="svc_result_failed_title">Sync stopped</string>
+
+    <string name="svc_err_volume_missing">A card was removed. Reinsert it and scan again.</string>
+    <string name="svc_err_volume_mismatch">A different card was detected than the one you selected.</string>
+    <string name="svc_err_permission">Access to a card was lost. Select the folder again.</string>
+    <string name="svc_err_read_only">The Walkman card is mounted read-only.</string>
+    <string name="svc_err_space">The Walkman card is out of space.</string>
+    <string name="svc_err_io">A read or write error occurred.</string>
+    <string name="svc_err_index_unsupported">The sync index on the card was written by a newer version of the app.</string>
+    <string name="svc_err_unexpected">An unexpected error occurred.</string>
+
+    <string name="svc_timeout_title">Sync paused by the system</string>
+    <string name="svc_timeout_text">Android limits long background transfers. Open the app to continue.</string>
+</resources>

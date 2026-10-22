@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MİMAR — değiştirilmez. USB yığın depolama sınıfı (8): kart okuyucular. Android eşleştirmede
+     cihaz sınıfına ve tüm arayüz sınıflarına bakar. -->
+<resources>
+    <usb-device class="8" />
+</resources>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MİMAR — değiştirilmez. Servis metinleri: strings_service.xml (B1), arayüz metinleri: strings_ui.xml (B2). -->
+<resources>
+    <string name="app_name" translatable="false">Walkman Sync</string>
+</resources>

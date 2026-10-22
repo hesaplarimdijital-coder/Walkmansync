@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MİMAR — değiştirilmez. Yalnızca launcher ikonu ve bildirim vurgu rengi. -->
+<resources>
+    <color name="ic_launcher_background">#111418</color>
+    <color name="notification_accent">#8AB0FF</color>
+</resources>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MİMAR — değiştirilmez. Bileşen adları docs/ARCHITECTURE.md dosya sahipliği tablosuyla eşleşir. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Ön plan servisi: çoklu dosya aktarımı DeX pencere değişimi / ekran kapanmasında kesilmesin. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <!-- API 33+: ilerleme/sonuç bildirimleri için çalışma zamanı izni (MainActivity ister). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Aktarım sırasında CPU uyumasın (kısmi wake lock, yalnızca Transferring durumunda). -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- USB-C kart okuyucu (USB host); zorunlu değil, dahili SD ile de kurulabilsin. -->
+    <uses-feature android:name="android.hardware.usb.host" android:required="false" />
+
+    <application
+        android:name=".WalkmanSyncApp"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.WalkmanSync">
+
+        <!-- resizeableActivity + configChanges: DeX'te pencere boyutlanınca etkinlik yeniden oluşturulmaz
+             (desktop-kit kabuğu durumunu korur). singleTask: USB takma intent'i ikinci örnek açmaz. -->
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|density|keyboard|keyboardHidden|navigation|uiMode|fontScale"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:resizeableActivity="true"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- USB kart okuyucu (yığın depolama sınıfı 8) takılınca uygulamayı önerir. -->
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/usb_mass_storage_filter" />
+        </activity>
+
+        <!-- Tarama + aktarım süresince ön planda tutan kabuk servis (B1). -->
+        <service
+            android:name=".service.SyncForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
+        <!-- Kart takıldı/çıkarıldı olayları (B1). MEDIA_* örtük yayın kısıtlamasından muaftır;
+             korumalı yayınlardır (yalnızca sistem gönderebilir), bu yüzden exported güvenlidir. -->
+        <receiver
+            android:name=".storage.VolumeEventReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_MOUNTED" />
+                <action android:name="android.intent.action.MEDIA_UNMOUNTED" />
+                <action android:name="android.intent.action.MEDIA_EJECT" />
+                <action android:name="android.intent.action.MEDIA_REMOVED" />
+                <action android:name="android.intent.action.MEDIA_BAD_REMOVAL" />
+                <data android:scheme="file" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

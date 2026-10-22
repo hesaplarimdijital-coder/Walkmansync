@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MİMAR — değiştirilmez. Gerçek tema desktop-kit (DesktopKitRoot) ile Compose içinde uygulanır;
+     bu yalnızca pencere arka planı ve sistem çubukları (edge-to-edge) içindir. -->
+<resources>
+    <style name="Theme.WalkmanSync" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+</resources>

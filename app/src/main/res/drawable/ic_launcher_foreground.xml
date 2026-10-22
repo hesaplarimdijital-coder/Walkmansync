@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MİMAR — değiştirilmez. 108dp tuval, güvenli alan 66dp (21..87). İki microSD kart ve tek yönlü ok:
+     soldaki kaynak kart → sağdaki Walkman kartı. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Kaynak kart (çentikli microSD silueti) -->
+    <path
+        android:fillColor="#E6E9ED"
+        android:pathData="M30,34h14l4,4v6l-2,2v4l2,2v20a2,2 0,0 1,-2 2h-16a2,2 0,0 1,-2 -2v-36a2,2 0,0 1,2 -2z" />
+    <path
+        android:fillColor="#111418"
+        android:pathData="M32,37h2v6h-2zM36,37h2v6h-2zM40,37h2v6h-2z" />
+    <!-- Hedef kart (Walkman) -->
+    <path
+        android:fillColor="#8AB0FF"
+        android:pathData="M64,34h14l4,4v6l-2,2v4l2,2v20a2,2 0,0 1,-2 2h-16a2,2 0,0 1,-2 -2v-36a2,2 0,0 1,2 -2z" />
+    <path
+        android:fillColor="#111418"
+        android:pathData="M66,37h2v6h-2zM70,37h2v6h-2zM74,37h2v6h-2z" />
+    <!-- Nota (hedef kart üzerinde) -->
+    <path
+        android:fillColor="#111418"
+        android:pathData="M73,52v10.6a3.2,3.2 0,1 0,2 3V56h3v-4z" />
+    <!-- Tek yönlü ok -->
+    <path
+        android:fillColor="#FF7A6E"
+        android:pathData="M50,52h6v-4l7,6 -7,6v-4h-6z" />
+</vector>

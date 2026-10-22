@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="svc_channel_progress_name">Senkronizasyon ilerlemesi</string>
+    <string name="svc_channel_progress_desc">Süren müzik senkronizasyonunun ilerlemesini gösterir.</string>
+    <string name="svc_channel_result_name">Senkronizasyon sonuçları</string>
+    <string name="svc_channel_result_desc">Senkronizasyon bittiğinde, durduğunda ya da dikkatinizi gerektirdiğinde bildirir.</string>
+
+    <string name="svc_notif_preparing">Hazırlanıyor…</string>
+    <string name="svc_notif_scanning_title">Kartlar taranıyor</string>
+    <string name="svc_scan_loading_index">Senkronizasyon indeksi okunuyor</string>
+    <string name="svc_scan_listing_target">Walkman kartı listeleniyor</string>
+    <string name="svc_scan_cleaning">Yarım kalan geçici dosyalar temizleniyor</string>
+    <string name="svc_scan_listing_source">Tablet kartı listeleniyor</string>
+    <string name="svc_scan_reading_tags">Müzik etiketleri okunuyor</string>
+    <string name="svc_scan_reading_tags_count">Müzik etiketleri okunuyor (%1$d / %2$d)</string>
+    <string name="svc_scan_planning">Kartlar karşılaştırılıyor</string>
+
+    <string name="svc_notif_transferring_title">Müzikler Walkman\'e kopyalanıyor</string>
+    <string name="svc_notif_paused_title">Senkronizasyon duraklatıldı</string>
+    <string name="svc_notif_transfer_text">%1$d / %2$d dosya · %3$s/sn</string>
+    <string name="svc_notif_transfer_text_no_speed">%1$d / %2$d dosya</string>
+    <string name="svc_notif_eta">Yaklaşık %1$s kaldı</string>
+    <string name="svc_notif_paused_text">%1$d / %2$d dosya işlendi</string>
+
+    <string name="svc_action_pause">Duraklat</string>
+    <string name="svc_action_resume">Devam et</string>
+    <string name="svc_action_cancel">İptal</string>
+
+    <string name="svc_result_done_title">Senkronizasyon tamamlandı</string>
+    <string name="svc_result_done_text">%1$d dosya kopyalandı (%2$s)</string>
+    <string name="svc_result_errors_title">Senkronizasyon hatalarla bitti</string>
+    <string name="svc_result_errors_text">%1$d dosya kopyalandı, %2$d dosya başarısız</string>
+    <string name="svc_result_cancelled_title">Senkronizasyon iptal edildi</string>
+    <string name="svc_result_cancelled_text">İptalden önce %1$d dosya kopyalandı</string>
+    <string name="svc_result_failed_title">Senkronizasyon durdu</string>
+
+    <string name="svc_err_volume_missing">Bir kart çıkarıldı. Kartı yeniden takıp tekrar tarayın.</string>
+    <string name="svc_err_volume_mismatch">Seçtiğinizden farklı bir kart algılandı.</string>
+    <string name="svc_err_permission">Bir karta erişim izni kayboldu. Klasörü yeniden seçin.</string>
+    <string name="svc_err_read_only">Walkman kartı salt okunur bağlanmış.</string>
+    <string name="svc_err_space">Walkman kartında yeterli alan yok.</string>
+    <string name="svc_err_io">Bir okuma ya da yazma hatası oluştu.</string>
+    <string name="svc_err_index_unsupported">Kartın senkronizasyon indeksi uygulamanın daha yeni bir sürümüyle yazılmış.</string>
+    <string name="svc_err_unexpected">Beklenmeyen bir hata oluştu.</string>
+
+    <string name="svc_timeout_title">Senkronizasyon sistem tarafından duraklatıldı</string>
+    <string name="svc_timeout_text">Android uzun arka plan aktarımlarını sınırlar. Devam etmek için uygulamayı açın.</string>
+</resources>

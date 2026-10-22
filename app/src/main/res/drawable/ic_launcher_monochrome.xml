@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MİMAR — değiştirilmez. Temalı (Material You) ikon için tek renk siluet. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M30,34h14l4,4v6l-2,2v4l2,2v20a2,2 0,0 1,-2 2h-16a2,2 0,0 1,-2 -2v-36a2,2 0,0 1,2 -2z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M64,34h14l4,4v6l-2,2v4l2,2v20a2,2 0,0 1,-2 2h-16a2,2 0,0 1,-2 -2v-36a2,2 0,0 1,2 -2z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M50,52h6v-4l7,6 -7,6v-4h-6z" />
+</vector>
