@@ -46,7 +46,7 @@ import desktopkit.components.paletteItems
 import desktopkit.components.rememberCommandPaletteState
 import desktopkit.input.CommonShortcuts
 import desktopkit.input.ShortcutScope
-import desktopkit.input.hasHardwareKeyboard
+import desktopkit.input.showShortcutHints
 import desktopkit.screens.PageHeader
 import desktopkit.settings.AppearanceSection
 import desktopkit.settings.DeskPreferences
@@ -60,7 +60,6 @@ import desktopkit.shell.ShellNavigator
 import desktopkit.shell.ShellSpec
 import desktopkit.shell.WidthClass
 import desktopkit.theme.DeskTheme
-import desktopkit.theme.InputMode
 
 /** Kabuk rotaları. */
 object Routes {
@@ -389,8 +388,8 @@ private fun BusyStrip(state: SyncState, route: String, onOpen: (String) -> Unit)
 @Composable
 private fun SettingsScreen(prefs: DeskPreferences) {
     val transferScope = stringResource(R.string.ui_scope_transfer)
-    // Kısayol listesi yalnızca kullanılabileceği yerde: fare ya da donanım klavyesi varken (kit 2.1.0, menüler gibi).
-    val keys = DeskTheme.inputMode == InputMode.Pointer || hasHardwareKeyboard()
+    // Kısayol listesi yalnızca kullanılabileceği yerde: fare ya da donanım klavyesi varken (kitin menüleriyle aynı kural).
+    val keys = showShortcutHints()
     LazyColumn(Modifier.fillMaxSize()) {
         item { PageHeader(stringResource(R.string.ui_nav_settings)) }
         item { AppearanceSection(prefs) }
