@@ -2,7 +2,7 @@
 
 Galaxy Tab S11 Ultra'nın kendi microSD kartındaki müzik arşivinden, USB-C kart okuyucuya takılı Sony NW-A307
 Walkman microSD kartına **yalnızca yeni müzikleri** aktaran Android uygulaması (Kotlin + Jetpack Compose,
-arayüz [desktop-kit](https://github.com/hesaplarimdijital-coder/desktop-kit) 0.1.3; DeX ve klavye/fare uyumlu).
+arayüz [desktop-kit](https://github.com/hesaplarimdijital-coder/desktop-kit) 2.1.0; DeX ve klavye/fare uyumlu).
 
 - **Yalnızca ekleme (append-only):** Walkman kartında hiçbir dosyanın üzerine yazılmaz, hiçbir dosya silinmez ya da
   yeniden adlandırılmaz. Uygulama yalnızca kendi `*.wsync.part` geçici dosyalarına ve indeks dosyasına dokunur.
@@ -16,10 +16,13 @@ arayüz [desktop-kit](https://github.com/hesaplarimdijital-coder/desktop-kit) 0.
 - **Arka plan:** tarama/aktarım `dataSync` ön plan servisiyle sürer; bildirimden duraklat/sürdür/iptal.
 
 ## Kurulum
-1. Projeyi **Android Studio** (Ladybug ya da daha yeni) ile açın; Gradle JDK olarak **JDK 17** seçin.
+1. Projeyi Android Gradle eklentisi 9.4'ü destekleyen güncel **Android Studio** ile açın; Gradle JDK olarak **JDK 17**
+   ya da üstünü seçin (AGP 9.4.1, Gradle 9.8.2, Kotlin 2.4.20).
 2. Bağımlılıklar Google Maven, Maven Central ve **JitPack**'ten (`desktop-kit`) iner; `settings.gradle.kts`
    bunları zaten tanımlar, ilk eşitleme için internet gerekir.
-3. `app` yapılandırmasını tablete (Android 11 / API 30 ve üstü) kurun. Komut satırı: `./gradlew :app:installDebug`.
+3. `app` yapılandırmasını tablete (Android 14 / API 34 ve üstü) kurun. Komut satırı: `./gradlew :app:installDebug`.
+4. Her gönderide GitHub Actions `:core` testlerini koşar ve hata ayıklama APK'sını `walkmansync-debug-apk` adıyla
+   çalıştırmanın Artifacts bölümüne koyar.
 
 ## İlk kullanım
 1. **Kartlar** ekranında "Kaynak kart" için *Klasör seç*: tabletin SD kartındaki müzik klasörünü (ya da kart
@@ -49,9 +52,6 @@ bash tools/verify-core.sh
 Android Studio'da `./gradlew :core:test` aynı testleri koşar.
 
 ## Bilinen sınırlamalar
-- **Bu teslimat Android derleyicisinden geçmedi.** Geliştirme ortamında Android SDK/Maven erişimi yoktu; `:app`
-  yalnızca gerçek API imzalarından yazılmış taklitlere karşı tür denetiminden geçirildi. İlk Gradle derlemesinde küçük
-  düzeltmeler (import, parametre adı, sürüm uyumu) gerekebilir.
 - Gerçek cihazda doğrulanmadı: USB-C okuyucudaki kartın SAF seçicide görünmesi (bazı okuyucu/OEM'lerde görünmeyebilir),
   `MEDIA_*`/USB olaylarının zamanlaması, Samsung pil optimizasyonu, DeX pencere geçişleri, Android 15 `dataSync`
   6 saat sınırı (`onTimeout` aktarımı duraklatır; kullanıcı sürdürür).

@@ -1,5 +1,8 @@
 # desktop-kit API özeti (v0.1.3)
 
+> **Eski:** bu özet uygulama 0.1.3 ile yazılırken çıkarıldı. Uygulama artık desktop-kit 2.1.0 kullanıyor; güncel API
+> için kit deposundaki `README.md`, `MIGRATION.md` ve `CHANGELOG.md` dosyalarına bakın.
+
 Kaynak: /tmp/desktop-kit (kit/src/main/java/desktopkit/**). İmzalar kaynaktan birebir; yalnızca public olanlar. Derleyici yok: burada olmayan bir şeyi UYDURMA.
 Paketler: `desktopkit`, `desktopkit.shell`, `desktopkit.components`, `desktopkit.input`, `desktopkit.screens`, `desktopkit.settings`, `desktopkit.theme`. Kitin kaynak sınıfı: `desktopkit.R` (örn. `desktopkit.R.string.dk_settings`).
 

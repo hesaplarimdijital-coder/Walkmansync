@@ -1,19 +1,19 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
 
 android {
     namespace = "com.walkmansync"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.walkmansync"
-        minSdk = 30
-        targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        // desktop-kit 2 Android 14 ister (MIGRATION.md); Tab S11 Ultra ve Galaxy S24 Android 16'da.
+        minSdk = 34
+        targetSdk = 36
+        versionCode = 2
+        versionName = "1.1"
     }
 
     buildTypes {
@@ -30,10 +30,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
     }
 
     sourceSets {
@@ -60,7 +56,7 @@ dependencies {
     // Doğrudan import edilir (createSavedStateHandle, NavHostController); geçişli gelseler de sürüm sabitlensin.
     implementation(libs.lifecycle.viewmodel.savedstate)
     implementation(libs.navigation.compose)
-    implementation(libs.core.ktx)
+    implementation(libs.core)
     implementation(libs.documentfile)
     implementation(libs.coroutines.android)
 

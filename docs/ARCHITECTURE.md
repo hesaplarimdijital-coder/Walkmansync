@@ -9,8 +9,10 @@ değişiklik gerekirse kendi dosyasında uyum katmanı yazmaz, Team Lead'e bildi
 ## 1. Modüller
 - `:core` — saf Kotlin/JVM 17. `android.*`/`androidx.*` importu YASAK. Yalnızca stdlib + kotlinx-coroutines-core;
   `tools/verify-core.sh` 1.6.4 ile derler → 1.6.4'te olmayan ya da `@ExperimentalCoroutinesApi`/`@FlowPreview` API kullanılmaz.
-- `:app` — Android (minSdk 30, target/compile 35), Compose + desktop-kit 0.1.3. Mantık burada değil, core'dadır.
-- Doğrulama: `bash tools/verify-core.sh` (core derle + JUnit4). Android derlemesi bu ortamda yapılamaz.
+- `:app` — Android (minSdk 34, targetSdk 36, compileSdk 37), Compose + desktop-kit 2.1.0 (AGP 9.4.1 yerleşik Kotlin,
+  Kotlin 2.4.20, Gradle 9.8.2). Mantık burada değil, core'dadır.
+- Doğrulama: `bash tools/verify-core.sh` (core derle + JUnit4, çevrimdışı); tam derleme ve APK GitHub Actions'ta
+  (`.github/workflows/android.yml`: `:core:test` + `:app:assembleDebug`).
 
 ## 2. Dosya sahipliği (eksiksiz)
 | Yol | Sahip | İçerik |
@@ -50,7 +52,7 @@ diğer ajanın dosyasında hata çıkarsa dokunmayın; raporlayın.
 `DomainModules.create(...)` (B2) ve `EngineModules.create(...)` (B1) imzalarıyla (bkz. `runtime/Modules.kt`) ve
 `com.walkmansync.media.MediaMetadataTagFallback(app: Application, logger: Logger) : TagFallback` (B2) ile bağlanır.
 UI → `SyncViewModel` (B2) → `graph.syncController` (`SyncController`, tek köprü). UI başka bir şeyi görmez.
-`MainActivity` (B2): `DesktopKitRoot`/`DesktopShell` kurar; API 33+ `POST_NOTIFICATIONS` ister (ret → yalnızca
+`MainActivity` (B2): `DesktopKitRoot`/`DesktopShell` kurar; `POST_NOTIFICATIONS` ister (ret → yalnızca
 uygulama içi ilerleme); `onCreate`/`onNewIntent`'te `USB_DEVICE_ATTACHED` gelirse
 `syncController.refreshVolumes(afterUsbAttach = true)` (hemen + 1,5/3/5 sn sonra yeniden okuma), `onStart`'ta düz yenileme.
 USB olay zinciri: `USB_DEVICE_ATTACHED` manifest ALICISINA gelmez; yalnızca (a) manifestteki etkinlik intent-filter'ı

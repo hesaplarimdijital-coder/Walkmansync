@@ -1,15 +1,18 @@
-# Sürümler desktop-kit 0.1.3 ile hizalıdır (AGP, Kotlin, Compose BOM, activity, lifecycle, coroutines).
+# Sürümler desktop-kit 2.1.0 ile hizalıdır (kitin gradle/libs.versions.toml dosyası; MIGRATION.md, 1. adım).
 [versions]
-agp = "8.7.3"
-kotlin = "2.1.0"
-composeBom = "2024.12.01"
-activityCompose = "1.9.3"
-lifecycle = "2.8.7"
-navigationCompose = "2.8.4"
-coroutines = "1.9.0"
-coreKtx = "1.15.0"
+# Compose 1.12 en az AGP 9.1.1 ve compileSdk 37 ister
+agp = "9.4.1"
+# AGP 9 Kotlin'i kendisi derler (yerleşik Kotlin); bu sürüm kökteki derleme dosyasında sabitlenir, :core da onunla derlenir.
+kotlin = "2.4.20"
+# Compose 1.12.1
+composeBom = "2026.09.00"
+activityCompose = "1.13.0"
+lifecycle = "2.11.0"
+navigationCompose = "2.10.2"
+coroutines = "1.11.0"
+core = "1.19.1"
 documentfile = "1.0.1"
-desktopKit = "0.1.3"
+desktopKit = "2.1.0"
 junit = "4.13.2"
 
 [libraries]
@@ -27,7 +30,8 @@ lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-com
 lifecycle-viewmodel-savedstate = { module = "androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "lifecycle" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 lifecycle-service = { module = "androidx.lifecycle:lifecycle-service", version.ref = "lifecycle" }
-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+# Yalnızca androidx.core sınıfları kullanılır (ContextCompat, ServiceCompat, NotificationCompat…); kit de core'u alır.
+core = { module = "androidx.core:core", version.ref = "core" }
 documentfile = { module = "androidx.documentfile:documentfile", version.ref = "documentfile" }
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
@@ -35,6 +39,7 @@ junit = { module = "junit:junit", version.ref = "junit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+# Hiç uygulanmaz (AGP 9 Kotlin'i kendisi derler); kökteki derleme dosyasında yalnızca Kotlin sürümünü sabitler.
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
