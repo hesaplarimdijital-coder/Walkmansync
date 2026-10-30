@@ -2,7 +2,7 @@
 
 Galaxy Tab S11 Ultra'nın kendi microSD kartındaki müzik arşivinden, USB-C kart okuyucuya takılı Sony NW-A307
 Walkman microSD kartına **yalnızca yeni müzikleri** aktaran Android uygulaması (Kotlin + Jetpack Compose,
-arayüz [desktop-kit](https://github.com/hesaplarimdijital-coder/desktop-kit) 2.1.0; DeX ve klavye/fare uyumlu).
+arayüz [desktop-kit](https://github.com/hesaplarimdijital-coder/desktop-kit) 2.2.0; DeX ve klavye/fare uyumlu).
 
 - **Yalnızca ekleme (append-only):** Walkman kartında hiçbir dosyanın üzerine yazılmaz, hiçbir dosya silinmez ya da
   yeniden adlandırılmaz. Uygulama yalnızca kendi `*.wsync.part` geçici dosyalarına ve indeks dosyasına dokunur.

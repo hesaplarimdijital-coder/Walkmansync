@@ -1,4 +1,4 @@
-# Sürümler desktop-kit 2.1.0 ile hizalıdır (kitin gradle/libs.versions.toml dosyası; MIGRATION.md, 1. adım).
+# Sürümler desktop-kit 2.2.0 ile hizalıdır (kitin gradle/libs.versions.toml dosyası; MIGRATION.md, 1. adım).
 [versions]
 # Compose 1.12 en az AGP 9.1.1 ve compileSdk 37 ister
 agp = "9.4.1"
@@ -12,7 +12,7 @@ navigationCompose = "2.10.2"
 coroutines = "1.11.0"
 core = "1.19.1"
 documentfile = "1.0.1"
-desktopKit = "2.1.0"
+desktopKit = "2.2.0"
 junit = "4.13.2"
 
 [libraries]

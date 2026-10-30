@@ -9,7 +9,7 @@ değişiklik gerekirse kendi dosyasında uyum katmanı yazmaz, Team Lead'e bildi
 ## 1. Modüller
 - `:core` — saf Kotlin/JVM 17. `android.*`/`androidx.*` importu YASAK. Yalnızca stdlib + kotlinx-coroutines-core;
   `tools/verify-core.sh` 1.6.4 ile derler → 1.6.4'te olmayan ya da `@ExperimentalCoroutinesApi`/`@FlowPreview` API kullanılmaz.
-- `:app` — Android (minSdk 34, targetSdk 36, compileSdk 37), Compose + desktop-kit 2.1.0 (AGP 9.4.1 yerleşik Kotlin,
+- `:app` — Android (minSdk 34, targetSdk 36, compileSdk 37), Compose + desktop-kit 2.2.0 (AGP 9.4.1 yerleşik Kotlin,
   Kotlin 2.4.20, Gradle 9.8.2). Mantık burada değil, core'dadır.
 - Doğrulama: `bash tools/verify-core.sh` (core derle + JUnit4, çevrimdışı); tam derleme ve APK GitHub Actions'ta
   (`.github/workflows/android.yml`: `:core:test` + `:app:assembleDebug`).
