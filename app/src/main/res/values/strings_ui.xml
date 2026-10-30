@@ -13,6 +13,7 @@
     <string name="ui_sc_cancel">Cancel the transfer</string>
     <string name="ui_sc_refresh">Refresh the cards</string>
     <string name="ui_scope_transfer">During a transfer</string>
+    <string name="ui_palette_screens">Screens</string>
     <string name="ui_action_refresh">Refresh</string>
     <string name="ui_action_scan">Scan</string>
     <string name="ui_action_scan_tip">Compare the cards and list the new music</string>

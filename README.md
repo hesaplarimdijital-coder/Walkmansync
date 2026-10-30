@@ -35,6 +35,10 @@ arayüz [desktop-kit](https://github.com/hesaplarimdijital-coder/desktop-kit) 2.
 5. **Aktar** (Ctrl+Enter): ilerleme, hız ve kalan süre görünür; Space duraklatır, Esc iptal eder. Bitince özet ve
    başarısız öğeler listelenir.
 
+Klavyeyle (DeX, klavye kapağı) **Ctrl+K** komut paletini açar: ekranlar ve o an çalışabilen komutlar (Tara, Aktar,
+Duraklat…) tek listede, Türkçe harfleri katlayan aramayla. Ayarlar › Görünüm'deki vurgu renkleri arasında duvar
+kâğıdının rengi ("Sistem") da var.
+
 ## Mimari özeti
 - `:core` — saf Kotlin/JVM (Android bağımlılığı yok): veri modelleri ve sözleşmeler, etiket ayrıştırıcıları
   (MP3/FLAC/M4A/OGG/Opus/WAV/DSF/DFF/AAC), fark motoru, yol planlayıcı, JSON indeks, atomik aktarım motoru,

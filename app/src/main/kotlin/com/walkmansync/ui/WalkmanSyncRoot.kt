@@ -1,6 +1,7 @@
 package com.walkmansync.ui
 
 import android.app.Activity
+import android.content.res.Resources
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -34,11 +35,15 @@ import com.walkmansync.R
 import com.walkmansync.core.model.SyncState
 import desktopkit.DesktopKitRoot
 import desktopkit.appResources
+import desktopkit.components.CommandPalette
 import desktopkit.components.DeskButton
 import desktopkit.components.DeskDialog
 import desktopkit.components.DeskIcons
 import desktopkit.components.DeskProgressBar
 import desktopkit.components.HorizontalRule
+import desktopkit.components.PaletteItem
+import desktopkit.components.paletteItems
+import desktopkit.components.rememberCommandPaletteState
 import desktopkit.input.CommonShortcuts
 import desktopkit.input.ShortcutScope
 import desktopkit.input.hasHardwareKeyboard
@@ -83,7 +88,9 @@ interface ShortcutHost {
  */
 @Composable
 fun WalkmanSyncRoot(viewModel: SyncViewModel, onHostChanged: (ShortcutHost?) -> Unit) {
-    val prefs = rememberDeskPreferences()
+    // Duvar kâğıdının rengi, Ayarlar › Görünüm'de hazır vurgu renklerinin sonunda bir seçenek ("Sistem"); seçilmedikçe
+    // vurgu değişmez.
+    val prefs = rememberDeskPreferences(dynamicAccent = true)
     DesktopKitRoot(prefs) { widthClass ->
         AppShell(viewModel = viewModel, prefs = prefs, widthClass = widthClass, onHostChanged = onHostChanged)
     }
@@ -111,6 +118,8 @@ private fun AppShell(viewModel: SyncViewModel, prefs: DeskPreferences, widthClas
     val backStack by navController.currentBackStackEntryAsState()
     val route = backStack?.destination?.route ?: Routes.CARDS
     val routeState = rememberUpdatedState(route)
+    // Ctrl+K: ekranlar ve şu an çalışabilen komutlar üzerinde komut paleti.
+    val palette = rememberCommandPaletteState()
 
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         viewModel.onPickResult(if (result.resultCode == Activity.RESULT_OK) result.data?.data else null)
@@ -131,11 +140,15 @@ private fun AppShell(viewModel: SyncViewModel, prefs: DeskPreferences, widthClas
         }
     }
 
-    val host = remember(navigator, prefs, viewModel) {
+    val host = remember(navigator, prefs, viewModel, palette) {
         object : ShortcutHost {
             override fun perform(id: String): Boolean {
                 val current = viewModel.state.value
                 return when (id) {
+                    CommonShortcuts.SEARCH -> {
+                        palette.open()
+                        true
+                    }
                     AppShortcuts.SCAN -> {
                         if (current.canScan()) viewModel.scan()
                         true
@@ -178,6 +191,8 @@ private fun AppShell(viewModel: SyncViewModel, prefs: DeskPreferences, widthClas
             }
 
             override fun activeScopes(): Set<ShortcutScope> {
+                // Palet açıkken tuşlar onun arama alanının: Space yazılır, Esc paleti kapatır, Ctrl+Enter aktarmaz.
+                if (palette.isOpen) return emptySet()
                 val running = viewModel.state.value.let { it is SyncState.Transferring || it is SyncState.Paused }
                 return if (running && routeState.value == Routes.TRANSFER) {
                     setOf(ShortcutScope.Global, AppShortcuts.TransferScope)
@@ -224,6 +239,7 @@ private fun AppShell(viewModel: SyncViewModel, prefs: DeskPreferences, widthClas
             enabled = { id -> isShortcutEnabled(id, viewModel) },
         )
     }
+    val screensGroup = stringResource(R.string.ui_palette_screens)
 
     val current = state
     val badges: Map<String, String> = when (current) {
@@ -243,6 +259,12 @@ private fun AppShell(viewModel: SyncViewModel, prefs: DeskPreferences, widthClas
         menus = menus,
         bottomBar = {
             BusyStrip(state = current, route = route, onOpen = { target -> navigator.navigate(target) })
+        },
+        overlays = {
+            CommandPalette(
+                state = palette,
+                items = { commandPaletteItems(spec, screensGroup, resources, navigator, host, viewModel) },
+            )
         },
     ) { currentRoute, _ ->
         when (currentRoute) {
@@ -265,6 +287,40 @@ private fun AppShell(viewModel: SyncViewModel, prefs: DeskPreferences, widthClas
             Text(stringResource(R.string.ui_cancel_text), style = DeskTheme.type.body, color = DeskTheme.colors.textSecondary)
         }
     }
+}
+
+/**
+ * Komut paletinin girişleri, her sorguda güncel durumdan: ekranlar (simgeleri ve Ctrl+1… kısayollarıyla), ardından
+ * kısayol tablosundan şu an çalışabilen komutlar (ekranlara gidenler ve paletin kendisi hariç).
+ */
+private fun commandPaletteItems(
+    spec: ShellSpec,
+    screensGroup: String,
+    resources: Resources,
+    navigator: ShellNavigator,
+    host: ShortcutHost,
+    viewModel: SyncViewModel,
+): List<PaletteItem> {
+    val screenShortcuts = mapOf(
+        Routes.CARDS to AppShortcuts.GO_CARDS,
+        Routes.DIFF to AppShortcuts.GO_DIFF,
+        Routes.TRANSFER to AppShortcuts.GO_TRANSFER,
+        Routes.SETTINGS to CommonShortcuts.SETTINGS,
+    )
+    val screens = spec.items.map { item ->
+        PaletteItem(
+            id = "screen:" + item.route,
+            title = item.label,
+            group = screensGroup,
+            onSelect = { navigator.navigate(item.route) },
+            icon = item.icon,
+            shortcut = screenShortcuts[item.route]?.let { AppShortcuts.label(it, resources) },
+        )
+    }
+    val commands = AppShortcuts.registry.paletteItems(resources) { id -> host.perform(id) }.filter { item ->
+        item.id !in screenShortcuts.values && item.id != CommonShortcuts.SEARCH && isShortcutEnabled(item.id, viewModel)
+    }
+    return screens + commands
 }
 
 /** Menü maddelerinin etkinliği; her menü açılışında güncel durumdan okunur. */

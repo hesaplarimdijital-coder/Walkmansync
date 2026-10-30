@@ -38,6 +38,8 @@ object AppShortcuts {
             Shortcut(GO_CARDS, CommonShortcuts.ViewGroup, R.string.ui_nav_cards, KeyChord(Key.One, ctrl = true)),
             Shortcut(GO_DIFF, CommonShortcuts.ViewGroup, R.string.ui_nav_new_music, KeyChord(Key.Two, ctrl = true)),
             Shortcut(GO_TRANSFER, CommonShortcuts.ViewGroup, R.string.ui_nav_transfer, KeyChord(Key.Three, ctrl = true)),
+            // Ctrl+K: komut paleti (kitin örnek uygulamasındaki gibi kitin "Ara" kısayolu açar)
+            CommonShortcuts.Search,
             CommonShortcuts.Settings,
             CommonShortcuts.ToggleSidebar,
             CommonShortcuts.ShortcutList,

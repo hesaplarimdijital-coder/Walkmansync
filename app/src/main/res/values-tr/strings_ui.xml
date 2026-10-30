@@ -13,6 +13,7 @@
     <string name="ui_sc_cancel">Aktarımı iptal et</string>
     <string name="ui_sc_refresh">Kartları yenile</string>
     <string name="ui_scope_transfer">Aktarım sırasında</string>
+    <string name="ui_palette_screens">Ekranlar</string>
     <string name="ui_action_refresh">Yenile</string>
     <string name="ui_action_scan">Tara</string>
     <string name="ui_action_scan_tip">Kartları karşılaştır ve yeni müzikleri listele</string>
