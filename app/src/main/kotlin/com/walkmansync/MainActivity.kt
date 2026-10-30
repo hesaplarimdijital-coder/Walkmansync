@@ -17,6 +17,7 @@ import com.walkmansync.ui.AppShortcuts
 import com.walkmansync.ui.ShortcutHost
 import com.walkmansync.ui.SyncViewModel
 import com.walkmansync.ui.WalkmanSyncRoot
+import desktopkit.components.CommandPaletteState
 
 /**
  * Tek etkinlik. Yeniden oluşturma (DeX pencere değişimi) durumu [SyncViewModel] ve kabuk kaydetmeleriyle korunur.
@@ -28,6 +29,12 @@ class MainActivity : ComponentActivity() {
 
     /** Kompozisyonun sağladığı kısayol köprüsü; kompozisyon yokken null. */
     private var shortcutHost: ShortcutHost? = null
+
+    /**
+     * Komut paletinin (Ctrl+K) durumu. Etkinlikte durur, çünkü kısayollar [dispatchKeyEvent]'te Compose'dan önce
+     * eşleşir: palet açıkken yönlendirme atlanır ve tuşlar paletin arama alanına gider (kitin MIGRATION.md'si).
+     */
+    private val palette = CommandPaletteState()
 
     /**
      * Kısayol olarak tüketilen son tuşun kodu. Eşleşme yalnızca KeyDown'da yapılır; aynı tuşun KeyUp'ı odaktaki
@@ -46,7 +53,7 @@ class MainActivity : ComponentActivity() {
         handleLaunchIntent(intent)
         if (savedInstanceState == null) requestNotificationPermission()
         setContent {
-            WalkmanSyncRoot(viewModel = viewModel, onHostChanged = { shortcutHost = it })
+            WalkmanSyncRoot(viewModel = viewModel, palette = palette, onHostChanged = { shortcutHost = it })
         }
     }
 
@@ -68,7 +75,8 @@ class MainActivity : ComponentActivity() {
             return true
         }
         val host = shortcutHost
-        if (host != null) {
+        // Palet açıkken tuşlar onun arama alanının: Space yazılır, Esc paleti kapatır, Ctrl+Enter aktarım başlatmaz.
+        if (host != null && !palette.isOpen) {
             val shortcut = AppShortcuts.registry.matchNative(event, host.activeScopes(), allowPlainKeys = true)
             if (shortcut != null) {
                 // Tuş basılı tutulunca tekrar eden olaylar tüketilir ama yeniden çalıştırılmaz.

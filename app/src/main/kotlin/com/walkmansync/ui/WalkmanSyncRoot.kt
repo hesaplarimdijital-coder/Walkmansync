@@ -36,6 +36,7 @@ import com.walkmansync.core.model.SyncState
 import desktopkit.DesktopKitRoot
 import desktopkit.appResources
 import desktopkit.components.CommandPalette
+import desktopkit.components.CommandPaletteState
 import desktopkit.components.DeskButton
 import desktopkit.components.DeskDialog
 import desktopkit.components.DeskIcons
@@ -43,7 +44,6 @@ import desktopkit.components.DeskProgressBar
 import desktopkit.components.HorizontalRule
 import desktopkit.components.PaletteItem
 import desktopkit.components.paletteItems
-import desktopkit.components.rememberCommandPaletteState
 import desktopkit.input.CommonShortcuts
 import desktopkit.input.ShortcutScope
 import desktopkit.input.showShortcutHints
@@ -83,15 +83,16 @@ interface ShortcutHost {
 
 /**
  * Uygulama kökü: tema + yoğunluk (DesktopKitRoot), gezinme kabuğu (DesktopShell), üç ekran ve ayarlar.
- * [onHostChanged] kısayol köprüsünü etkinliğe bildirir (kompozisyondan ayrılınca null).
+ * [palette] komut paletinin (Ctrl+K) etkinlikte tutulan durumudur. [onHostChanged] kısayol köprüsünü etkinliğe
+ * bildirir (kompozisyondan ayrılınca null).
  */
 @Composable
-fun WalkmanSyncRoot(viewModel: SyncViewModel, onHostChanged: (ShortcutHost?) -> Unit) {
+fun WalkmanSyncRoot(viewModel: SyncViewModel, palette: CommandPaletteState, onHostChanged: (ShortcutHost?) -> Unit) {
     // Duvar kâğıdının rengi, Ayarlar › Görünüm'de hazır vurgu renklerinin sonunda bir seçenek ("Sistem"); seçilmedikçe
     // vurgu değişmez.
     val prefs = rememberDeskPreferences(dynamicAccent = true)
     DesktopKitRoot(prefs) { widthClass ->
-        AppShell(viewModel = viewModel, prefs = prefs, widthClass = widthClass, onHostChanged = onHostChanged)
+        AppShell(viewModel = viewModel, prefs = prefs, palette = palette, widthClass = widthClass, onHostChanged = onHostChanged)
     }
 }
 
@@ -107,7 +108,13 @@ private fun SyncState.phase(): Phase = when (this) {
 }
 
 @Composable
-private fun AppShell(viewModel: SyncViewModel, prefs: DeskPreferences, widthClass: WidthClass, onHostChanged: (ShortcutHost?) -> Unit) {
+private fun AppShell(
+    viewModel: SyncViewModel,
+    prefs: DeskPreferences,
+    palette: CommandPaletteState,
+    widthClass: WidthClass,
+    onHostChanged: (ShortcutHost?) -> Unit,
+) {
     val resources = appResources()
     val navController = rememberNavController()
     val navigator = remember(navController) { ShellNavigator(navController) }
@@ -117,8 +124,6 @@ private fun AppShell(viewModel: SyncViewModel, prefs: DeskPreferences, widthClas
     val backStack by navController.currentBackStackEntryAsState()
     val route = backStack?.destination?.route ?: Routes.CARDS
     val routeState = rememberUpdatedState(route)
-    // Ctrl+K: ekranlar ve şu an çalışabilen komutlar üzerinde komut paleti.
-    val palette = rememberCommandPaletteState()
 
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         viewModel.onPickResult(if (result.resultCode == Activity.RESULT_OK) result.data?.data else null)
@@ -190,8 +195,6 @@ private fun AppShell(viewModel: SyncViewModel, prefs: DeskPreferences, widthClas
             }
 
             override fun activeScopes(): Set<ShortcutScope> {
-                // Palet açıkken tuşlar onun arama alanının: Space yazılır, Esc paleti kapatır, Ctrl+Enter aktarmaz.
-                if (palette.isOpen) return emptySet()
                 val running = viewModel.state.value.let { it is SyncState.Transferring || it is SyncState.Paused }
                 return if (running && routeState.value == Routes.TRANSFER) {
                     setOf(ShortcutScope.Global, AppShortcuts.TransferScope)
