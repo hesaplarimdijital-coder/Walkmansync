@@ -369,7 +369,7 @@ fun ScanPanel(progress: ScanProgress, onCancel: () -> Unit, modifier: Modifier =
             )
             DeskButton(text = stringResource(R.string.ui_action_cancel), onClick = onCancel)
         }
-        DeskProgressBar(progress.fraction)
+        DeskProgressBar(progress.fraction, contentDescription = stringResource(R.string.ui_scanning_title))
         Text(res.scanPhaseText(progress), style = DeskTheme.type.body, color = colors.textSecondary)
         val path = progress.currentPath
         if (path != null) {

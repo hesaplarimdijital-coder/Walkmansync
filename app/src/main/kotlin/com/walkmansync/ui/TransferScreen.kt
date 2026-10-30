@@ -128,7 +128,11 @@ private fun RunningView(viewModel: SyncViewModel, progress: TransferProgress, pa
                         color = colors.textSecondary,
                     )
                 }
-                DeskProgressBar(progress.fraction, color = if (paused) colors.warning else colors.accent)
+                DeskProgressBar(
+                    fraction = progress.fraction,
+                    color = if (paused) colors.warning else colors.accent,
+                    contentDescription = stringResource(R.string.ui_nav_transfer),
+                )
             }
 
             val tiles = listOf(
@@ -195,7 +199,10 @@ private fun CurrentFileCard(progress: TransferProgress) {
                 Text(formatBytes(item.size), style = DeskTheme.type.mono, color = colors.textSecondary, maxLines = 1)
             }
             Text(item.targetDir, style = DeskTheme.type.mono, color = colors.textTertiary, maxLines = 2, overflow = TextOverflow.Ellipsis)
-            DeskProgressBar(if (item.size > 0) progress.currentItemBytes.toFloat() / item.size else null)
+            DeskProgressBar(
+                fraction = if (item.size > 0) progress.currentItemBytes.toFloat() / item.size else null,
+                contentDescription = stringResource(R.string.ui_current_file),
+            )
             Text(
                 text = res.getString(R.string.ui_bytes_of, formatBytes(progress.currentItemBytes), formatBytes(item.size)),
                 style = DeskTheme.type.labelSmall,

@@ -381,7 +381,12 @@ private fun BusyStrip(state: SyncState, route: String, onOpen: (String) -> Unit)
             Column(Modifier.weight(1f)) {
                 Text(text, style = DeskTheme.type.label, color = colors.text, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Spacer(Modifier.height(dimens.gapXs))
-                DeskProgressBar(fraction, color = if (paused) colors.warning else colors.accent)
+                DeskProgressBar(
+                    fraction = fraction,
+                    color = if (paused) colors.warning else colors.accent,
+                    // TalkBack'te çubuğun adı; yüzdeyi kit okur
+                    contentDescription = stringResource(if (target == Routes.TRANSFER) R.string.ui_nav_transfer else R.string.ui_scanning_title),
+                )
             }
             DeskButton(text = stringResource(R.string.ui_action_open), onClick = { onOpen(target) })
         }
