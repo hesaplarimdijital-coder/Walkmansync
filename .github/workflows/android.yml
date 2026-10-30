@@ -27,11 +27,27 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
+      # Gradle's output also goes to build.log; when a step fails, the errors become annotations (below).
       - name: Core unit tests
-        run: ./gradlew :core:test --stacktrace --console=plain
+        shell: bash
+        run: ./gradlew :core:test --stacktrace --console=plain 2>&1 | tee -a build.log
 
       - name: Build debug APK
-        run: ./gradlew :app:assembleDebug --stacktrace --console=plain
+        shell: bash
+        run: ./gradlew :app:assembleDebug --stacktrace --console=plain 2>&1 | tee -a build.log
+
+      # Compiler errors, failed tests and Gradle's "What went wrong" as one annotation on the run, readable
+      # on the commit page and through the checks API without downloading the logs.
+      - name: Report build errors
+        if: failure()
+        shell: bash
+        run: |
+          [ -f build.log ] || exit 0
+          {
+            grep -E '^e: |FAILED$' build.log | head -40 || true
+            grep -A10 'What went wrong' build.log | head -40 || true
+          } | sed -e 's/%/%25/g' -e 's/\r//g' | awk 'BEGIN { ORS = "%0A" } { print }' > errors.txt || true
+          if [ -s errors.txt ]; then echo "::error title=Gradle::$(cat errors.txt)"; fi
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
