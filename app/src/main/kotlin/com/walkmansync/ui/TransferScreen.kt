@@ -26,8 +26,13 @@ import com.walkmansync.core.model.SyncState
 import com.walkmansync.core.model.TransferOutcome
 import com.walkmansync.core.model.TransferProgress
 import com.walkmansync.core.model.TransferSummary
+import desktopkit.appResources
+import desktopkit.components.BannerTone
 import desktopkit.components.DeskButton
 import desktopkit.components.DeskIcons
+import desktopkit.components.DeskProgressBar
+import desktopkit.components.KeyValueRow
+import desktopkit.components.StatusBanner
 import desktopkit.components.TooltipArea
 import desktopkit.screens.MessageScreen
 import desktopkit.screens.PageHeader
@@ -109,7 +114,7 @@ private fun RunningView(viewModel: SyncViewModel, progress: TransferProgress, pa
             verticalArrangement = Arrangement.spacedBy(dimens.gapL),
         ) {
             MessageBanner(viewModel)
-            SurfaceCard(Modifier.fillMaxWidth()) {
+            SectionCard(Modifier.fillMaxWidth()) {
                 Row(verticalAlignment = Alignment.Bottom) {
                     Text(
                         text = formatPercent(progress.fraction),
@@ -161,7 +166,7 @@ private fun RunningView(viewModel: SyncViewModel, progress: TransferProgress, pa
 
 @Composable
 private fun StatTile(label: String, value: String, modifier: Modifier) {
-    SurfaceCard(modifier) {
+    SectionCard(modifier) {
         Text(label, style = DeskTheme.type.labelSmall, color = DeskTheme.colors.textTertiary, maxLines = 1)
         Text(value, style = DeskTheme.type.title, color = DeskTheme.colors.text, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
@@ -172,7 +177,7 @@ private fun CurrentFileCard(progress: TransferProgress) {
     val colors = DeskTheme.colors
     val res = appResources()
     val item = progress.currentItem
-    SurfaceCard(Modifier.fillMaxWidth()) {
+    SectionCard(Modifier.fillMaxWidth()) {
         Text(stringResource(R.string.ui_current_file), style = DeskTheme.type.labelSmall, color = colors.textTertiary)
         if (item == null) {
             Text(stringResource(R.string.ui_current_none), style = DeskTheme.type.body, color = colors.textSecondary)
@@ -243,7 +248,7 @@ private fun SummaryView(viewModel: SyncViewModel, summary: TransferSummary, erro
         ) {
             item(key = "message") { MessageBanner(viewModel) }
             item(key = "headline") {
-                SurfaceCard(Modifier.fillMaxWidth()) {
+                SectionCard(Modifier.fillMaxWidth()) {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(dimens.gapM)) {
                         StatusGlyph(status, description = null, size = dimens.iconLarge)
                         Column(Modifier.weight(1f)) {
@@ -269,13 +274,16 @@ private fun SummaryView(viewModel: SyncViewModel, summary: TransferSummary, erro
                 item(key = "index") { StatusBanner(BannerTone.Warning, stringResource(R.string.ui_summary_index_not_saved)) }
             }
             item(key = "stats") {
-                SurfaceCard(Modifier.fillMaxWidth()) {
-                    KeyValueRow(stringResource(R.string.ui_summary_copied), res.getString(R.string.ui_stat_done_value, summary.copiedItems, summary.totalItems))
-                    KeyValueRow(stringResource(R.string.ui_summary_data), formatBytes(summary.copiedBytes))
-                    KeyValueRow(stringResource(R.string.ui_summary_time), formatDuration(elapsed))
-                    KeyValueRow(stringResource(R.string.ui_summary_speed), formatRate(averageSpeed))
-                    KeyValueRow(stringResource(R.string.ui_summary_failed), summary.failures.size.toString())
-                    KeyValueRow(stringResource(R.string.ui_summary_not_attempted), summary.notAttempted.toString())
+                SectionCard(Modifier.fillMaxWidth()) {
+                    // Kitin KeyValueRow'ları kendi dikey boşluklarıyla aralıksız dizilir.
+                    Column {
+                        KeyValueRow(stringResource(R.string.ui_summary_copied), res.getString(R.string.ui_stat_done_value, summary.copiedItems, summary.totalItems))
+                        KeyValueRow(stringResource(R.string.ui_summary_data), formatBytes(summary.copiedBytes))
+                        KeyValueRow(stringResource(R.string.ui_summary_time), formatDuration(elapsed))
+                        KeyValueRow(stringResource(R.string.ui_summary_speed), formatRate(averageSpeed))
+                        KeyValueRow(stringResource(R.string.ui_summary_failed), summary.failures.size.toString())
+                        KeyValueRow(stringResource(R.string.ui_summary_not_attempted), summary.notAttempted.toString())
+                    }
                 }
             }
             if (summary.failures.isNotEmpty()) {
@@ -297,7 +305,7 @@ private fun FailureRow(failure: ItemFailure) {
     val colors = DeskTheme.colors
     val dimens = DeskTheme.dimens
     val res = appResources()
-    SurfaceCard(Modifier.fillMaxWidth()) {
+    SectionCard(Modifier.fillMaxWidth()) {
         Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(dimens.gapM)) {
             StatusGlyph(DiffStatus.Error, description = null, size = dimens.icon)
             Column(Modifier.weight(1f)) {

@@ -35,8 +35,13 @@ import com.walkmansync.core.model.VolumeId
 import com.walkmansync.core.model.VolumeKind
 import com.walkmansync.core.model.VolumeRole
 import com.walkmansync.core.model.VolumeStatus
+import desktopkit.appResources
+import desktopkit.components.BannerTone
 import desktopkit.components.DeskButton
 import desktopkit.components.DeskIcons
+import desktopkit.components.DeskProgressBar
+import desktopkit.components.KeyValueRow
+import desktopkit.components.StatusBanner
 import desktopkit.components.TooltipArea
 import desktopkit.screens.PageHeader
 import desktopkit.shell.WidthClass
@@ -216,7 +221,7 @@ private fun VolumeCard(
     val volume = binding?.let { b -> mounted.firstOrNull { it.id == b.volume } }
     val isTarget = role == VolumeRole.TARGET
 
-    SurfaceCard(modifier) {
+    SectionCard(modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = if (isTarget) WalkmanIcons.Walkman else WalkmanIcons.SdCard,
@@ -239,39 +244,42 @@ private fun VolumeCard(
         }
 
         if (binding != null) {
-            KeyValueRow(stringResource(R.string.ui_card_name), volume?.label ?: binding.label)
-            KeyValueRow(stringResource(R.string.ui_card_uuid), binding.volume.toString(), mono = true)
-            KeyValueRow(stringResource(R.string.ui_card_folder), binding.treeDocId, mono = true)
-            if (volume != null) {
-                KeyValueRow(
-                    label = stringResource(R.string.ui_card_reader),
-                    value = stringResource(
-                        when (volume.kind) {
-                            VolumeKind.SD_CARD -> R.string.ui_kind_sd
-                            VolumeKind.USB -> R.string.ui_kind_usb
-                            VolumeKind.UNKNOWN -> R.string.ui_kind_unknown
-                        },
-                    ),
-                )
-                if (isTarget) {
+            val info = targetInfo?.takeIf { isTarget && it.volume == binding.volume }
+            // Kitin KeyValueRow'ları kendi dikey boşluklarıyla aralıksız dizilir.
+            Column {
+                KeyValueRow(stringResource(R.string.ui_card_name), volume?.label ?: binding.label)
+                KeyValueRow(stringResource(R.string.ui_card_uuid), binding.volume.toString(), mono = true)
+                KeyValueRow(stringResource(R.string.ui_card_folder), binding.treeDocId, mono = true)
+                if (volume != null) {
                     KeyValueRow(
-                        label = stringResource(R.string.ui_card_access),
-                        value = stringResource(if (volume.isWritable) R.string.ui_access_rw else R.string.ui_access_ro),
-                        valueColor = if (volume.isWritable) colors.text else colors.danger,
+                        label = stringResource(R.string.ui_card_reader),
+                        value = stringResource(
+                            when (volume.kind) {
+                                VolumeKind.SD_CARD -> R.string.ui_kind_sd
+                                VolumeKind.USB -> R.string.ui_kind_usb
+                                VolumeKind.UNKNOWN -> R.string.ui_kind_unknown
+                            },
+                        ),
                     )
+                    if (isTarget) {
+                        KeyValueRow(
+                            label = stringResource(R.string.ui_card_access),
+                            value = stringResource(if (volume.isWritable) R.string.ui_access_rw else R.string.ui_access_ro),
+                            valueColor = if (volume.isWritable) colors.text else colors.danger,
+                        )
+                    }
+                }
+                if (isTarget) {
+                    KeyValueRow(stringResource(R.string.ui_card_filesystem), info?.let { res.fileSystemLabel(it.fileSystem) } ?: DASH)
+                    KeyValueRow(stringResource(R.string.ui_card_free), info?.freeBytes?.let { formatBytes(it) } ?: DASH)
                 }
             }
-            if (isTarget) {
-                val info = targetInfo?.takeIf { it.volume == binding.volume }
-                KeyValueRow(stringResource(R.string.ui_card_filesystem), info?.let { res.fileSystemLabel(it.fileSystem) } ?: DASH)
-                KeyValueRow(stringResource(R.string.ui_card_free), info?.freeBytes?.let { formatBytes(it) } ?: DASH)
-                if (info == null) {
-                    Text(
-                        text = stringResource(R.string.ui_card_fs_after_scan),
-                        style = DeskTheme.type.labelSmall,
-                        color = colors.textTertiary,
-                    )
-                }
+            if (isTarget && info == null) {
+                Text(
+                    text = stringResource(R.string.ui_card_fs_after_scan),
+                    style = DeskTheme.type.labelSmall,
+                    color = colors.textTertiary,
+                )
             }
         }
 
@@ -319,7 +327,7 @@ private fun DetectedVolumes(mounted: List<RemovableVolume>, snapshot: List<Volum
     val colors = DeskTheme.colors
     val res = appResources()
     val bound = snapshot.mapNotNull { it.bindingOrNull() }
-    SurfaceCard(Modifier.fillMaxWidth()) {
+    SectionCard(Modifier.fillMaxWidth()) {
         Text(stringResource(R.string.ui_detected_title), style = DeskTheme.type.title, color = colors.text)
         if (mounted.isEmpty()) {
             Text(stringResource(R.string.ui_detected_none), style = DeskTheme.type.body, color = colors.textSecondary)
@@ -351,7 +359,7 @@ private fun DetectedVolumes(mounted: List<RemovableVolume>, snapshot: List<Volum
 fun ScanPanel(progress: ScanProgress, onCancel: () -> Unit, modifier: Modifier = Modifier) {
     val colors = DeskTheme.colors
     val res = appResources()
-    SurfaceCard(modifier.fillMaxWidth()) {
+    SectionCard(modifier.fillMaxWidth()) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = stringResource(R.string.ui_scanning_title),

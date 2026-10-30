@@ -1,6 +1,7 @@
 package com.walkmansync.ui
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.state.ToggleableState
 import com.walkmansync.core.model.AudioFormat
 import com.walkmansync.core.model.SkipReason
 import com.walkmansync.core.model.SkippedItem
@@ -219,8 +220,8 @@ data class DiffUiState(
     val transferCount: Int get() = rows?.items?.size ?: 0
     val skippedCount: Int get() = rows?.skipped?.size ?: 0
 
-    /** Görünür satırlardan eklenebilir olanların işaret durumu: 0 hiçbiri, 1 bazıları, 2 hepsi. */
-    val visibleCheckState: Int
+    /** Görünür satırlardan eklenebilir olanların işaret durumu: hiçbiri, bazıları (ara durum) ya da hepsi. */
+    val visibleCheckState: ToggleableState
         get() {
             var includable = 0
             var included = 0
@@ -230,9 +231,9 @@ data class DiffUiState(
                 if (row.id in selected) included++
             }
             return when {
-                included == 0 -> 0
-                included == includable -> 2
-                else -> 1
+                included == 0 -> ToggleableState.Off
+                included == includable -> ToggleableState.On
+                else -> ToggleableState.Indeterminate
             }
         }
 

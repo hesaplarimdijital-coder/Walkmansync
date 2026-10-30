@@ -33,8 +33,11 @@ import androidx.navigation.compose.rememberNavController
 import com.walkmansync.R
 import com.walkmansync.core.model.SyncState
 import desktopkit.DesktopKitRoot
+import desktopkit.appResources
 import desktopkit.components.DeskButton
+import desktopkit.components.DeskDialog
 import desktopkit.components.DeskIcons
+import desktopkit.components.DeskProgressBar
 import desktopkit.components.HorizontalRule
 import desktopkit.input.CommonShortcuts
 import desktopkit.input.ShortcutScope
@@ -252,13 +255,15 @@ private fun AppShell(viewModel: SyncViewModel, prefs: DeskPreferences, widthClas
 
     if (cancelDialog && (current is SyncState.Transferring || current is SyncState.Paused)) {
         DeskDialog(
-            title = stringResource(R.string.ui_cancel_title),
-            text = stringResource(R.string.ui_cancel_text),
-            confirmLabel = stringResource(R.string.ui_cancel_confirm),
-            dismissLabel = stringResource(R.string.ui_cancel_keep),
-            onConfirm = viewModel::confirmCancel,
             onDismiss = viewModel::dismissCancelDialog,
-        )
+            title = stringResource(R.string.ui_cancel_title),
+            actions = {
+                DeskButton(stringResource(R.string.ui_cancel_keep), viewModel::dismissCancelDialog)
+                DeskButton(stringResource(R.string.ui_cancel_confirm), viewModel::confirmCancel, primary = true)
+            },
+        ) {
+            Text(stringResource(R.string.ui_cancel_text), style = DeskTheme.type.body, color = DeskTheme.colors.textSecondary)
+        }
     }
 }
 

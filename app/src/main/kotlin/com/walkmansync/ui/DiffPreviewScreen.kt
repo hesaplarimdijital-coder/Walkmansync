@@ -21,21 +21,32 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.walkmansync.R
 import com.walkmansync.core.model.SyncPlan
 import com.walkmansync.core.model.SyncState
+import desktopkit.appResources
+import desktopkit.components.BannerTone
+import desktopkit.components.CheckboxRow
 import desktopkit.components.ColumnWidth
 import desktopkit.components.DeskButton
+import desktopkit.components.DeskCheckbox
 import desktopkit.components.DeskIconButton
 import desktopkit.components.DeskIcons
+import desktopkit.components.DeskProgressBar
+import desktopkit.components.DeskSearchField
 import desktopkit.components.DenseTable
 import desktopkit.components.HorizontalRule
 import desktopkit.components.HorizontalSplitPane
+import desktopkit.components.KeyValueRow
+import desktopkit.components.MenuButton
 import desktopkit.components.MenuEntry
 import desktopkit.components.SegmentedChoice
+import desktopkit.components.StatusBanner
 import desktopkit.components.TableColumn
 import desktopkit.components.TableSort
 import desktopkit.components.TooltipArea
@@ -153,7 +164,6 @@ private fun PlanContent(viewModel: SyncViewModel, ui: DiffUiState, plan: SyncPla
                 )
                 MenuButton(
                     text = controls.format?.name ?: stringResource(R.string.ui_filter_all_formats),
-                    icon = DeskIcons.ChevronDown,
                     entries = {
                         buildList<MenuEntry> {
                             add(
@@ -178,7 +188,6 @@ private fun PlanContent(viewModel: SyncViewModel, ui: DiffUiState, plan: SyncPla
                 if (controls.tab == DiffTab.Skipped) {
                     MenuButton(
                         text = controls.reason?.let { res.skipReasonLabel(it) } ?: stringResource(R.string.ui_filter_all_reasons),
-                        icon = DeskIcons.ChevronDown,
                         entries = {
                             buildList<MenuEntry> {
                                 add(
@@ -206,11 +215,11 @@ private fun PlanContent(viewModel: SyncViewModel, ui: DiffUiState, plan: SyncPla
                     DeskButton(text = stringResource(R.string.ui_action_plan_order), onClick = viewModel::clearSort)
                 }
             }
-            FilterTextField(
+            DeskSearchField(
                 value = controls.query,
                 onValueChange = viewModel::setQuery,
-                hint = stringResource(R.string.ui_filter_hint),
                 modifier = Modifier.fillMaxWidth(),
+                hint = stringResource(R.string.ui_filter_hint),
             )
         }
         Spacer(Modifier.height(dimens.gapS))
@@ -257,6 +266,7 @@ private fun TableArea(viewModel: SyncViewModel, ui: DiffUiState, compact: Boolea
         null
     }
     val includable = ui.visible.any { it.canInclude }
+    val selectAllLabel = stringResource(if (onSkippedTab) R.string.ui_select_all_shown_skipped else R.string.ui_select_all_shown)
 
     Column(Modifier.fillMaxSize()) {
         Row(
@@ -264,10 +274,16 @@ private fun TableArea(viewModel: SyncViewModel, ui: DiffUiState, compact: Boolea
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(dimens.gapXs),
         ) {
-            DeskTriCheckbox(state = ui.visibleCheckState, onClick = viewModel::toggleVisible, enabled = includable)
+            DeskCheckbox(
+                state = ui.visibleCheckState,
+                onClick = viewModel::toggleVisible,
+                // yanındaki metin vurgu sayısını gösterebildiği için kutunun adı ayrıca verilir
+                modifier = Modifier.semantics { contentDescription = selectAllLabel },
+                enabled = includable,
+            )
             Text(
                 text = if (ui.highlight.isEmpty()) {
-                    stringResource(if (onSkippedTab) R.string.ui_select_all_shown_skipped else R.string.ui_select_all_shown)
+                    selectAllLabel
                 } else {
                     res.getString(R.string.ui_highlighted_count, ui.highlight.size)
                 },
@@ -442,37 +458,42 @@ private fun DetailPane(row: DiffRow?, included: Boolean, onIncludedChange: (Bool
             Text(subtitle, style = DeskTheme.type.body, color = colors.textSecondary)
         }
         if (row.canInclude) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                DeskCheckbox(checked = included, onCheckedChange = onIncludedChange)
-                Text(
-                    text = stringResource(if (skipped != null) R.string.ui_detail_force else R.string.ui_detail_include),
-                    style = DeskTheme.type.body,
-                    color = colors.text,
-                )
-            }
+            CheckboxRow(
+                title = stringResource(if (skipped != null) R.string.ui_detail_force else R.string.ui_detail_include),
+                checked = included,
+                onCheckedChange = onIncludedChange,
+            )
         }
         HorizontalRule()
-        if (skipped != null) {
-            KeyValueRow(stringResource(R.string.ui_detail_skip_reason), res.skipReasonLabel(skipped.reason))
-            Text(res.skipReasonDescription(skipped.reason), style = DeskTheme.type.labelSmall, color = colors.textTertiary)
-            val extra = skipped.detail
-            if (extra != null) KeyValueRow(stringResource(R.string.ui_detail_note), extra, mono = true, maxLines = 4)
-        } else if (item != null) {
-            KeyValueRow(stringResource(R.string.ui_detail_copy_reason), res.copyReasonLabel(item.reason))
-        }
-        KeyValueRow(stringResource(R.string.ui_detail_size), formatBytes(row.size))
-        if (tags != null) {
-            tags.trackNumber?.let { KeyValueRow(stringResource(R.string.ui_detail_track), it.toString()) }
-            tags.discNumber?.let { KeyValueRow(stringResource(R.string.ui_detail_disc), it.toString()) }
-            tags.durationMs?.let { KeyValueRow(stringResource(R.string.ui_detail_duration), formatDuration(it)) }
-        }
-        KeyValueRow(stringResource(R.string.ui_detail_source), row.sourcePath, mono = true, maxLines = 6)
-        if (row.targetPath.isNotEmpty()) {
-            KeyValueRow(stringResource(R.string.ui_detail_target), row.targetPath, mono = true, maxLines = 6)
-        }
-        val companionOf = item?.companionOfId
-        if (companionOf != null) {
-            KeyValueRow(stringResource(R.string.ui_detail_companion), companionOf, mono = true, maxLines = 4)
+        // Kitin KeyValueRow'ları kendi dikey boşluklarıyla aralıksız dizilir.
+        Column {
+            if (skipped != null) {
+                KeyValueRow(stringResource(R.string.ui_detail_skip_reason), res.skipReasonLabel(skipped.reason))
+                Text(
+                    text = res.skipReasonDescription(skipped.reason),
+                    style = DeskTheme.type.labelSmall,
+                    color = colors.textTertiary,
+                    modifier = Modifier.padding(vertical = dimens.gapXs),
+                )
+                val extra = skipped.detail
+                if (extra != null) KeyValueRow(stringResource(R.string.ui_detail_note), extra, mono = true, maxLines = 4)
+            } else if (item != null) {
+                KeyValueRow(stringResource(R.string.ui_detail_copy_reason), res.copyReasonLabel(item.reason))
+            }
+            KeyValueRow(stringResource(R.string.ui_detail_size), formatBytes(row.size))
+            if (tags != null) {
+                tags.trackNumber?.let { KeyValueRow(stringResource(R.string.ui_detail_track), it.toString()) }
+                tags.discNumber?.let { KeyValueRow(stringResource(R.string.ui_detail_disc), it.toString()) }
+                tags.durationMs?.let { KeyValueRow(stringResource(R.string.ui_detail_duration), formatDuration(it)) }
+            }
+            KeyValueRow(stringResource(R.string.ui_detail_source), row.sourcePath, mono = true, maxLines = 6)
+            if (row.targetPath.isNotEmpty()) {
+                KeyValueRow(stringResource(R.string.ui_detail_target), row.targetPath, mono = true, maxLines = 6)
+            }
+            val companionOf = item?.companionOfId
+            if (companionOf != null) {
+                KeyValueRow(stringResource(R.string.ui_detail_companion), companionOf, mono = true, maxLines = 4)
+            }
         }
     }
 }
