@@ -47,6 +47,7 @@ import desktopkit.components.DeskIconButton
 import desktopkit.components.DeskIcons
 import desktopkit.components.MenuEntry
 import desktopkit.components.MenuPopup
+import desktopkit.shell.keepsKeyboardOpen
 import desktopkit.theme.DeskTheme
 
 // desktop-kit'te olmayan bileşenler Material3 ile, renkler DeskTheme belirteçlerinden: onay kutusu,
@@ -147,7 +148,8 @@ fun FilterTextField(value: String, onValueChange: (String) -> Unit, hint: String
         singleLine = true,
         textStyle = DeskTheme.type.body.copy(color = colors.text),
         cursorBrush = SolidColor(colors.accent),
-        modifier = modifier,
+        // Kit 2.1.0: ekran klavyesi açıkken alan dışına dokunmak klavyeyi kapatır; işaretli alan kitinkiler gibi sayılır.
+        modifier = modifier.keepsKeyboardOpen(),
         decorationBox = { field ->
             Row(
                 Modifier
